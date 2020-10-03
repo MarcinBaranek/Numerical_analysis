@@ -9,7 +9,6 @@ def linear_equations_with_householder_algorithm(matrix: np.ndarray, bias: np.nda
     solve = np.array(bias[-1, 0] / r_matrix[-1, -1])
     solve = np.reshape(solve, newshape=(-1, 1))
     for i in range(1, dim, 1):
-
         next_solve_value = (bias[dim - i - 1, 0] - np.dot(r_matrix[dim - i - 1, dim - i:],
                                                           solve))\
                            / r_matrix[dim - i - 1, dim - i - 1]
