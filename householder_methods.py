@@ -26,7 +26,13 @@ def householder_transformation_matrix(vector: np.ndarray, new_vector: np.ndarray
         householder_vector = vector + math.sqrt((vector**2).sum()) * new_vector
     else:
         householder_vector = vector - math.sqrt((vector ** 2).sum()) * new_vector
-    specular_reflection = 2 / np.dot(np.transpose(householder_vector), householder_vector)
+    specular_reflection = np.dot(np.transpose(householder_vector), householder_vector)
+    if specular_reflection != 0:
+        specular_reflection = 2 / specular_reflection
+    else:
+        print("Error in householder_transformation: specular reflection is equal +infinity")
+        print("you tried to divide by 0")
+        return np.array(False)
     identity_matrix = init_identity_matrix(dimensional)
     #create householder matrix
     householder_matrix = specular_reflection * np.dot(householder_vector, np.transpose(householder_vector))
@@ -44,10 +50,19 @@ def improvement_r_matrix(matrix: np.ndarray, iteration: int) -> np.ndarray:
     return matrix
 
 
+#for numerical stability
+def improvement_matrix(matrix: np.ndarray, epsilon=1.e-5):
+    matrix = matrix.astype(dtype=float)
+    location = np.where(abs(matrix - 0) < epsilon)
+    matrix[location] = epsilon
+    return matrix
+
+
 def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
     if not isinstance(matrix, np.ndarray):
         print("Error in householder_algorithm: input matrix is not a numpy.ndarray object")
         return False
+    matrix = improvement_matrix(matrix)
     first_dimensional = matrix.shape[0]
     identity_matrix = init_identity_matrix(first_dimensional)
     # create P, Q and R matrix
@@ -60,6 +75,10 @@ def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
     unit_vector[0, 0] = 1
     for i in range(first_dimensional):
         householder_matrix = householder_transformation_matrix(r_matrix[i:, i], unit_vector)
+        if not householder_matrix.all():
+            print("something went wrong")
+            print("check the assumptions")
+            return False, False
         # preparing unit vector to next iteration
         unit_vector = np.reshape(np.delete(unit_vector, -1), newshape=(-1, 1))
         # update P matrix
