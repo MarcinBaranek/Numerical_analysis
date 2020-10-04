@@ -45,7 +45,7 @@ def householder_transformation_matrix(vector: np.ndarray, new_vector: np.ndarray
 def improvement_r_matrix(matrix: np.ndarray, iteration: int) -> np.ndarray:
     j = 1
     for i in range(iteration):
-        matrix[j:, i] = np.zeros(shape=matrix[i, j:].shape)
+        matrix[j:, i] = np.zeros(shape=matrix[j:, i].shape)
         j += 1
     return matrix
 
@@ -64,6 +64,11 @@ def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
         return False, False
     matrix = improvement_matrix(matrix)
     first_dimensional = matrix.shape[0]
+    if first_dimensional > matrix.shape[1]:
+        print("The matrix has the first dimension greater than the second,\n"
+              "therefore the algorithm was run for the transposed matrix")
+        first_dimensional = matrix.shape[1]
+        matrix = np.transpose(matrix)
     identity_matrix = init_identity_matrix(first_dimensional)
     # create P, Q and R matrix
     # Q matrix will be transpose be for end of function
