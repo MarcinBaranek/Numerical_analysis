@@ -1,4 +1,4 @@
-from householder_methodes import householder_algorithm
+from householder_methods import householder_algorithm
 import numpy as np
 
 def linear_equations_with_householder_algorithm(matrix: np.ndarray, bias: np.ndarray) -> np.ndarray:
