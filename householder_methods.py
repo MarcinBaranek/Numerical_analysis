@@ -61,7 +61,7 @@ def improvement_matrix(matrix: np.ndarray, epsilon=1.e-5):
 def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
     if not isinstance(matrix, np.ndarray):
         print("Error in householder_algorithm: input matrix is not a numpy.ndarray object")
-        return False
+        return False, False
     matrix = improvement_matrix(matrix)
     first_dimensional = matrix.shape[0]
     identity_matrix = init_identity_matrix(first_dimensional)
