@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import time
 
 
 #create identity matrix
@@ -10,7 +11,10 @@ def init_identity_matrix(dim: int) -> np.ndarray:
     return identity_matrix
 
 
-def householder_transformation_matrix(vector: np.ndarray, new_vector: np.ndarray) -> np.ndarray:
+def householder_transformation_matrix(vector: np.ndarray, new_vector: np.ndarray,
+                                      time_of_execution=False) -> np.ndarray:
+    if time_of_execution:
+        now = time.time()
     if not (isinstance(vector, np.ndarray) and isinstance(new_vector, np.ndarray)):
         print("Error in householder_transformation: input vector is not a numpy.ndarray object")
         return np.array(False)
@@ -37,6 +41,8 @@ def householder_transformation_matrix(vector: np.ndarray, new_vector: np.ndarray
     #create householder matrix
     householder_matrix = specular_reflection * np.dot(householder_vector, np.transpose(householder_vector))
     householder_matrix = identity_matrix - householder_matrix
+    if time_of_execution:
+        print(f"time of execution householder_transformation_matrix is: {time.time() - now} s")
     return householder_matrix
 
 
@@ -58,11 +64,15 @@ def improvement_matrix(matrix: np.ndarray, epsilon=1.e-5):
     return matrix
 
 
-def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
+def householder_algorithm(matrix: np.ndarray, improve_matrix=True,
+                          improve_r_matrix=True, time_of_execution=False) -> (np.ndarray, np.ndarray):
+    if time_of_execution:
+        now = time.time()
     if not isinstance(matrix, np.ndarray):
         print("Error in householder_algorithm: input matrix is not a numpy.ndarray object")
-        return False, False
-    matrix = improvement_matrix(matrix)
+        return False
+    if improve_matrix:
+        matrix = improvement_matrix(matrix)
     first_dimensional = matrix.shape[0]
     if first_dimensional > matrix.shape[1]:
         print("The matrix has the first dimension greater than the second,\n"
@@ -90,7 +100,8 @@ def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
         p_matrix[i:, i:] = householder_matrix
         # update R matrix
         r_matrix = np.dot(p_matrix, r_matrix)
-        r_matrix = improvement_r_matrix(r_matrix, i)
+        if improve_r_matrix:
+            r_matrix = improvement_r_matrix(r_matrix, i)
         # update Q matrix
         if i == 0:
             q_matrix = p_matrix
@@ -99,4 +110,6 @@ def householder_algorithm(matrix: np.ndarray) -> (np.ndarray, np.ndarray):
         # preparing P matrix to next iteration
         p_matrix = init_identity_matrix(first_dimensional)
     q_matrix = np.transpose(q_matrix)
+    if time_of_execution:
+        print(f"time of execution householder_algorithm is: {time.time() - now} s")
     return q_matrix, r_matrix
