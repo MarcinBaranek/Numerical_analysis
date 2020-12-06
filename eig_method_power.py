@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def eig_value_power_method(matrix: np.array, init_vector=None, max_iter=None, epsilon=None):
+def eig_value_power_method(matrix: np.array, init_vector=None, max_iter=None):
     if max_iter is None:
         max_iter = 5 * matrix.shape[0]
     if init_vector is None:
