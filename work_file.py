@@ -201,6 +201,9 @@ def linear_equations_with_householder_algorithm(matrix: np.ndarray,
         print(f"time of execution linear_equations_with_householder_algorithm is: {time.time() - now} s")
 
     return solve
+  
+def mserorr(matrix_1: np.ndarray, matrix_1: np.ndarray):
+    return ((matrix_1-matrix_2)**2).sum()
 
 
 if __name__ == '__main__':
